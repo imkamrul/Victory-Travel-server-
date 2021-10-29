@@ -20,6 +20,13 @@ async function run() {
         const packages = database.collection('Packages');
         const users = database.collection('Users');
 
+        // get packages api 
+        app.get('/packages', async (req, res) => {
+            // console.log("pakages hittet");
+            const cursor = packages.find({});
+            const result = await cursor.toArray();
+            res.json(result)
+        })
         // post package  api  
         app.post('/packageADD', async (req, res) => {
             const newPackage = req.body;
