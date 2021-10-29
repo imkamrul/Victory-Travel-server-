@@ -52,11 +52,36 @@ async function run() {
 
             res.json(events);
         })
+
+        // get all user api 
+        app.get('/allUsers', async (req, res) => {
+            const cursor = users.find({});
+            const result = await cursor.toArray();
+            res.json(result)
+
+        })
         // post packages registration api
         app.post('/packageRegister', async (req, res) => {
             const newBooking = req.body;
             const result = await bookPackages.insertOne(newBooking);
             res.json(result);
+
+
+        })
+        // new user add 
+        app.post('/AddUser', async (req, res) => {
+            const newUser = req.body;
+            let emailADD;
+            // const result = await users.insertOne(newUser);
+            // res.json(result);
+            const cursor = bookPackages.find({});
+            const result = await cursor.toArray();
+            const existEmail = result.map(res => res.email == newUser.email)
+            if (!existEmail) {
+                emailADD = await users.insertOne(newUser);
+            }
+            res.json(emailADD);
+
 
 
         })
@@ -87,6 +112,15 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await bookPackages.deleteOne(query);
+
+            res.json(result)
+
+        })
+        // delete admin 
+        app.delete('/deleteUser/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await users.deleteOne(query);
 
             res.json(result)
 
