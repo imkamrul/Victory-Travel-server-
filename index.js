@@ -18,6 +18,7 @@ async function run() {
 
         const database = client.db('VictoryTravel');
         const packages = database.collection('Packages');
+        const bookPackages = database.collection('bookPackages');
         const users = database.collection('Users');
 
         // get packages api 
@@ -27,11 +28,67 @@ async function run() {
             const result = await cursor.toArray();
             res.json(result)
         })
+        // get selected package api 
+        app.get('/selectedPack/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const query = { _id: ObjectId(id) };
+            const result = await packages.findOne(query);
+
+            res.json(result)
+        })
+        // get all booking api 
+        app.get('/allBooking', async (req, res) => {
+            const cursor = bookPackages.find({});
+            const result = await cursor.toArray();
+            res.json(result)
+
+        })
+        // get  only my booking api 
+        app.get('/myBookings', async (req, res) => {
+            const search = req.query.search;
+            const cursor = bookPackages.find({ email: search });
+            const events = await cursor.toArray();
+
+            res.json(events);
+        })
+        // post packages registration api
+        app.post('/packageRegister', async (req, res) => {
+            const newBooking = req.body;
+            const result = await bookPackages.insertOne(newBooking);
+            res.json(result);
+
+
+        })
         // post package  api  
         app.post('/packageADD', async (req, res) => {
             const newPackage = req.body;
             const result = await packages.insertOne(newPackage);
             res.json(result);
+
+        })
+        // put update booking api 
+        app.put('/bookingStatusUpdate/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: "Approve"
+                }
+            }
+            const result = await bookPackages.updateOne(filter, updateDoc, options)
+
+            res.json(result)
+        })
+        // delete booking package api 
+        app.delete('/bookingDelete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookPackages.deleteOne(query);
+
+            res.json(result)
 
         })
 
