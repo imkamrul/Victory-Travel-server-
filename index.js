@@ -44,6 +44,7 @@ async function run() {
             res.json(result)
 
         })
+
         // get  only my booking api 
         app.get('/myBookings', async (req, res) => {
             const search = req.query.search;
@@ -99,21 +100,29 @@ async function run() {
             res.json(result);
 
         })
-        // put update booking api 
+
         app.put('/bookingStatusUpdate/:id', async (req, res) => {
             const id = req.params.id;
+            const newStatus = req.body;
+
 
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
-            const updateDoc = {
+            const updatePackage = {
                 $set: {
-                    status: "Approve"
+                    status: newStatus.Status
                 }
             }
-            const result = await bookPackages.updateOne(filter, updateDoc, options)
+            // console.log(updatePackage)
+            const result = await bookPackages.updateOne(filter, updatePackage, options)
 
             res.json(result)
         })
+
+
+
+
+
         // delete booking package api 
         app.delete('/bookingDelete/:id', async (req, res) => {
             const id = req.params.id;
