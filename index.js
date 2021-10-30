@@ -85,6 +85,17 @@ async function run() {
 
 
         })
+        // new user add 
+        app.post('/registerUser', async (req, res) => {
+            const newUser = req.body;
+
+            const result = await users.insertOne(newUser);
+            res.json(result);
+
+
+
+
+        })
         // post package  api  
         app.post('/packageADD', async (req, res) => {
             const newPackage = req.body;
