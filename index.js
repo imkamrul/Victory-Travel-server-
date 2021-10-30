@@ -72,22 +72,18 @@ async function run() {
         app.post('/AddUser', async (req, res) => {
             const newUser = req.body;
             let emailADD;
-            // const result = await users.insertOne(newUser);
-            // res.json(result);
-            const cursor = bookPackages.find({});
+            const cursor = users.find({});
             const result = await cursor.toArray();
-            const existEmail = result.map(res => res.email == newUser.email)
+            const existEmail = result.find(res => res.email == newUser.email)
             if (!existEmail) {
                 emailADD = await users.insertOne(newUser);
             }
             res.json(emailADD);
-
-
-
         })
         // new user add 
         app.post('/registerUser', async (req, res) => {
             const newUser = req.body;
+            // console.log(newUser)
 
             const result = await users.insertOne(newUser);
             res.json(result);
